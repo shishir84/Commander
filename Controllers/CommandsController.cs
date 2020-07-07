@@ -1,5 +1,8 @@
+using System.Collections;
 using System.Collections.Generic;
+using AutoMapper;
 using Commander.Data;
+using Commander.DTOs;
 using Commander.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +13,12 @@ namespace Commander.Controllers
     public class CommandsController: ControllerBase
     {
         private readonly ICommanderRepo _mockRepo;
+        private readonly IMapper _mapper;
 
-        public CommandsController(ICommanderRepo mockRepo)
+        public CommandsController(ICommanderRepo mockRepo, IMapper mapper)
         {
             _mockRepo = mockRepo;
+            _mapper = mapper;
         }
         
         [HttpGet]
@@ -21,7 +26,7 @@ namespace Commander.Controllers
         {
             var commands = _mockRepo.GetAllCommands();
 
-            return Ok(commands);
+            return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commands));
         }
 
         [HttpGet("{Id}")]
@@ -29,7 +34,7 @@ namespace Commander.Controllers
         {
             var command = _mockRepo.GetCommandById(Id);
 
-            return Ok(command);
+            return Ok(_mapper.Map<CommandReadDto>(command));
         }
     }
 }
